@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fdfdfd"
+    android:orientation="vertical"
+    >
+
+    <ImageView
+        android:id="@+id/loginDecoIv"
+        android:layout_width="140dp"
+        android:layout_height="255dp"
+        android:layout_margin="0dp"
+        android:src="@drawable/login_deco" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="142dp"
+        android:layout_margin="0dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="0dp"
+        android:src="@drawable/pp_logo" />
+
+    <EditText
+        android:maxLength="32"
+        android:id="@+id/edtLoginID"
+        android:padding="10dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edt_outline"
+        android:layout_width="288dp"
+        android:layout_height="48dp"
+        android:includeFontPadding="false"
+        android:textColor="#111111"
+        android:textSize="16dp"
+        android:hint="아이디를 입력하세요"
+        />
+
+    <EditText
+        android:maxLength="16"
+        android:id="@+id/edtLoginPW"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edt_outline"
+        android:layout_width="288dp"
+        android:layout_height="48dp"
+        android:inputType="textPassword"
+        android:includeFontPadding="false"
+        android:textColor="#111111"
+        android:textSize="16dp"
+        android:hint="비밀번호를 입력하세요"
+        />
+
+        <TextView
+            android:id="@+id/tvFindID"
+            android:layout_marginTop="10dp"
+            android:layout_width="240dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="아이디 찾기 / 비밀번호 찾기"
+            android:includeFontPadding="false"
+            android:textColor="#111111"
+            android:textSize="16dp"/>
+
+        <android.widget.Button
+            android:id="@+id/loginBtn"
+            android:layout_marginTop="180dp"
+            android:layout_width="288dp"
+            android:layout_height="48dp"
+            android:background="@drawable/edt_outline"
+            android:backgroundTint="#43C367"
+            android:text="로그인"
+            android:fontFamily="@font/notosans_regular"
+            android:textStyle="bold"
+            android:includeFontPadding="false"
+            android:textColor="#fdfdfd"
+            android:textSize="16dp"
+            />
+        <TextView
+            android:id="@+id/tvJoin"
+            android:layout_marginTop="4dp"
+            android:layout_width="240dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/notosans_regular"
+            android:text="회원 가입하기"
+            android:includeFontPadding="false"
+            android:textColor="#111111"
+            android:textSize="16dp"/>
+    </LinearLayout>
+
+</FrameLayout>
+
+
+
