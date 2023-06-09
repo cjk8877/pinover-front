@@ -67,15 +67,20 @@ public class GalleryFragment extends Fragment {
         // Inflate the layout for this fragment
 
         ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> srcList = new ArrayList<>();
         list.add("오늘");
         for (int i =0; i<9; i++){
             list.add(String.format("%d일 전", i+1));
+            srcList.add("https://www.picplace.kro.kr/posting/picture/34229dc30066cc4bed3fab82adad2afd");
+            srcList.add("https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FIH7pg%2FbtqGH1ZgBXx%2Ft8KhtXCPoKDM1ZKljOv270%2Fimg.jpg");
+            srcList.add("https://ppss.kr/wp-content/uploads/2014/04/007-549x377.jpg");
+            srcList.add("https://ppss.kr/wp-content/uploads/2014/04/007-549x377.jpg");
         }
 
         RecyclerView recyclerView = layout.findViewById(R.id.galleryRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        GalleryRcyAdapter adapter = new GalleryRcyAdapter(list);
+        GalleryRcyAdapter adapter = new GalleryRcyAdapter(list, srcList);
         recyclerView.setAdapter(adapter);
         return layout;
     }

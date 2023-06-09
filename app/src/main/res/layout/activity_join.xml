@@ -24,33 +24,24 @@
         android:layout_marginRight="108dp"
         android:fontFamily="@font/notosans_regular"
         android:includeFontPadding="false"
-        android:text="이메일 : "
+        android:text="아이디 : "
         android:textColor="#111111"
         android:textSize="18dp" />
 
     <EditText
-        android:id="@+id/edtJoinEmail"
+        android:id="@+id/edtJoinId"
         android:layout_width="280dp"
         android:layout_height="48dp"
         android:background="@drawable/edt_outline"
-        android:hint="이메일"
+        android:hint="아이디"
         android:includeFontPadding="false"
         android:maxLength="50"
         android:padding="10dp"
         android:textColor="#111111"
         android:textSize="16dp"
-        android:text="dummy@naver.com"/>
+        android:text="dummy"/>
 
-    <TextView
-        android:layout_marginTop="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="40dp"
-        android:fontFamily="@font/notosans_regular"
-        android:includeFontPadding="false"
-        android:text="아이디 대신 사용될 이메일 주소입니다."
-        android:textColor="#626262"
-        android:textSize="12dp" />
+
 
 
     <TextView
@@ -147,27 +138,26 @@
 
     <TextView
         android:layout_marginTop="10dp"
-        android:layout_marginRight="100dp"
+        android:layout_marginRight="120dp"
         android:id="@+id/tv4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="생년월일 : "
+        android:text="주소"
         android:fontFamily="@font/notosans_regular"
         android:includeFontPadding="false"
         android:textColor="#111111"
         android:textSize="18dp"/>
 
     <EditText
-        android:id="@+id/edtJoinBirth"
+        android:id="@+id/edtJoinAddress"
         android:padding="10dp"
         android:background="@drawable/edt_outline"
         android:layout_width="280dp"
         android:layout_height="47dp"
-        android:maxLength="8"
         android:includeFontPadding="false"
         android:textColor="#111111"
         android:textSize="16dp"
-        android:hint="19980514 형식으로 입력"
+        android:hint="주소를 입력"
         android:text="19900724"
         />
 
@@ -178,24 +168,24 @@
         android:layout_marginRight="36dp"
         android:fontFamily="@font/notosans_regular"
         android:includeFontPadding="false"
-        android:text="고객님의 생일을 관리하는데 사용됩니다."
+        android:text="고객님의 지역을 확인하는데 필요합니다."
         android:textColor="#626262"
         android:textSize="12dp" />
 
     <TextView
         android:layout_marginTop="10dp"
-        android:layout_marginRight="116dp"
+        android:layout_marginRight="102dp"
         android:id="@+id/tv7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="이름 : "
+        android:text="전화 번호"
         android:fontFamily="@font/notosans_regular"
         android:includeFontPadding="false"
         android:textColor="#111111"
         android:textSize="18dp"/>
 
     <EditText
-        android:id="@+id/edtJoinName"
+        android:id="@+id/edtJoinPN"
         android:padding="10dp"
         android:background="@drawable/edt_outline"
         android:layout_width="280dp"
@@ -204,7 +194,7 @@
         android:includeFontPadding="false"
         android:textColor="#111111"
         android:textSize="16dp"
-        android:hint="이름"
+        android:hint="전화번호"
         android:text="dummy"
         />
 
@@ -212,10 +202,10 @@
         android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="64dp"
+        android:layout_marginRight="20dp"
         android:fontFamily="@font/notosans_regular"
         android:includeFontPadding="false"
-        android:text="고객님의 실명을 입력하세요."
+        android:text="고객님이 사용중인 휴대 전화 번호를 알려주세요."
         android:textColor="#626262"
         android:textSize="12dp" />
 

@@ -11,17 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.ImageViewHolder> {
+public class PostImagePagerAdapter extends RecyclerView.Adapter<PostImagePagerAdapter.ImageViewHolder> {
 
     private Context context;
-    private ArrayList<Bitmap> bitmaps;
+    private ArrayList<String> imageSrc;
 
-    public ImagePagerAdapter(Context context, ArrayList<Bitmap> bitmaps) {
+    public PostImagePagerAdapter(Context context, ArrayList<String> imageSrc) {
         this.context = context;
-        this.bitmaps = bitmaps;
+        this.imageSrc = imageSrc;
     }
 
     @NonNull
@@ -33,23 +35,13 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        Bitmap bitmap = bitmaps.get(position);
-        holder.imageView.setImageBitmap(bitmap);
-
-        // 마지막 항목인 경우 클릭 이벤트 부여
-        if (position == getItemCount() - 1) {
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick();
-                }
-            });
-        }
+        String src = imageSrc.get(position);
+        Glide.with(context).load(imageSrc.get(position)).centerCrop().into(holder.imageView);
     }
 
     @Override
     public int getItemCount() {
-        return bitmaps.size();
+        return imageSrc.size();
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {

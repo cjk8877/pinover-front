@@ -7,12 +7,15 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toolbar;
@@ -28,19 +31,21 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity{
+    private final String TAG = "MainACTIVITY";
     Toolbar toolbar;
     BottomNavigationView navigationView;
     private DrawerLayout drawerLayout;
     private LinearLayout drawerView, drawerHeader;
+    private OnBackPressedListener mapBackPressFragment;
     MapFragment mapFragment;
     MyPinFragment myPinFragment;
     SearchFragment searchFragment;
     GalleryFragment galleryFragment;
+    Intent loadIntent, regiIntent;
     public static Context contextMain;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int UPDATE_INTERVAL_MS = 1000;
     private static final int FASTEST_UPDATE_INTERVAL_MS = 500;
-    String[] REQUIRED_PERMISSION = {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +56,11 @@ public class MainActivity extends AppCompatActivity{
         contextMain = this;
 
         //load page
-        Intent intent = new Intent(this, LoadingActivity.class);
-        startActivity(intent);
+        loadIntent = new Intent(this, LoadingActivity.class);
+        startActivity(loadIntent);
+
+        //regiIntent setting
+        regiIntent = new Intent(this, RegiPinActivity.class);
 
         //drawer setting
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -85,6 +93,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        setCurrentFragment(mapFragment);
         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, mapFragment).commit();
 
         navigationView = findViewById(R.id.bottomMenu);
@@ -104,6 +113,10 @@ public class MainActivity extends AppCompatActivity{
                     case R.id.tabMyPin:
                         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, myPinFragment).commit();
                         return true;
+                    case R.id.tabAddMarker:
+                        //게시글 올리기 액티비티 실행
+                        startActivity(regiIntent);
+                        return true;
                 }
                 return false;
             }
@@ -114,9 +127,13 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        Log.d(TAG, Boolean.toString(mapFragment.isPinInfoOpened()));
         if (drawer.isDrawerOpen(GravityCompat.START)) {
+            Log.d(TAG, "드로어가 열려있습니다");
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(mapBackPressFragment != null && mapFragment.isPinInfoOpened()){
+            mapBackPressFragment.onBackPressed();
+        }else{
             super.onBackPressed();
         }
     }
@@ -150,5 +167,15 @@ public class MainActivity extends AppCompatActivity{
 
     public LocationManager getLocationSystemService(){
         return (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+    }
+
+
+
+    public interface OnBackPressedListener{
+        void onBackPressed();
+    }
+
+    public void setCurrentFragment(OnBackPressedListener fragment){
+        mapBackPressFragment = fragment;
     }
 }

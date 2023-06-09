@@ -3,6 +3,7 @@ package com.example.pictureplace;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -47,7 +48,7 @@ import java.util.Map;
  */
 
 public class MapFragment extends Fragment
-        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, MainActivity.OnBackPressedListener {
     private MapView mapView = null;
     MainActivity mainActivity;
     LinearLayout pinInfo;
@@ -60,11 +61,23 @@ public class MapFragment extends Fragment
     Location location = null;
     View layout;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
+    boolean isPinInfoOpened;
     Marker myMarker;
     MarkerOptions myLocationMarker;
     Circle circle;
     CircleOptions circle1KM;
+
+    @Override
+    public void onBackPressed(){
+        if(pinInfo.getVisibility() == View.VISIBLE) {
+            pinInfo.setVisibility(View.GONE);
+            contextMain.visibleBottomMenu();
+        }
+    }
+
+    public boolean isPinInfoOpened(){
+        return isPinInfoOpened;
+    };
 
     public MapFragment() {
         // required
@@ -100,6 +113,7 @@ public class MapFragment extends Fragment
             public void onClick(View v) {
                 pinInfo.setVisibility(View.GONE);
                 contextMain.visibleBottomMenu();
+                isPinInfoOpened = false;
             }
         });
         return layout;
@@ -234,9 +248,10 @@ public class MapFragment extends Fragment
             return;
         }
         location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        showCurrentLocation(latitude, longitude);
+
+//        double latitude = location.getLatitude();
+//        double longitude = location.getLongitude();
+//        showCurrentLocation(latitude, longitude);
 
         googleMap.setOnMarkerClickListener(this);
     }
@@ -245,6 +260,7 @@ public class MapFragment extends Fragment
     public boolean onMarkerClick(Marker maker) {
         pinInfo.setVisibility(View.VISIBLE);
         contextMain.hideBottomMenu();
+        isPinInfoOpened = true;
         return true;
     }
 
@@ -306,7 +322,6 @@ public class MapFragment extends Fragment
                     Log.i("MyLocTest", "최근 위치2 호출");
                 }
 
-
                 //위치 요청하기
                 manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
                 //manager.removeUpdates(gpsListener);
@@ -327,8 +342,8 @@ public class MapFragment extends Fragment
             double longitude = location.getLongitude();
             double zoomLevel = mMap.getCameraPosition().zoom;
 
-            //String message = "내 위치는 Latitude : " + latitude + "\nLongtitude : " + longitude + "확대 비율은" + zoomLevel;
-            //Log.d("MapFrag", message);
+            String message = "확대 비율은" + zoomLevel;
+            Log.d("MapFrag", message);
 
             //showCurrentLocation(latitude, longitude);
             //Log.i("MyLocTest", "onLocationChanged() 호출되었습니다.");
@@ -373,9 +388,10 @@ public class MapFragment extends Fragment
         if (circle1KM == null) {
             circle1KM = new CircleOptions().center(curPoint) // 원점
                     .radius(1000)       // 반지름 단위 : m
-                    .strokeWidth(1.0f);    // 선너비 0f : 선없음
-            //.fillColor(Color.parseColor("#1AFFFFFF")); // 배경색
+                    .strokeWidth(1.0f)    // 선너비 0f : 선없음
+                    .fillColor(Color.parseColor("#1AFFFFFF")); // 배경색
             circle = mMap.addCircle(circle1KM);
+
 
         } else {
             circle.remove(); // 반경삭제

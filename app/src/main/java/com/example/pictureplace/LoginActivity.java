@@ -21,6 +21,9 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import okhttp3.Cookie;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,19 +84,21 @@ public class LoginActivity extends AppCompatActivity  {
         Gson gson = new GsonBuilder().setLenient().create();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(ILoginService.loginBaseUrl)
+                .baseUrl(ILoginService.BaseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         ILoginService service = retrofit.create(ILoginService.class);
-        Call<LoginResponse> call = service.getMember(id, pw);
+        Call<LoginDTO> call = service.getMember(id, pw);
 
-        call.enqueue(new Callback<LoginResponse>() {
+        call.enqueue(new Callback<LoginDTO>() {
             @Override
-            public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+            public void onResponse(@NonNull Call<LoginDTO> call, @NonNull Response<LoginDTO> response) {
                 if (response.isSuccessful() && response.body() != null)
                 {
-                    Log.e("onSuccess", response.body().token);
+                    List<String> Cookielist = response.headers().values("Set-Cookie");
+                    String jsessionid = (Cookielist.get(0).split(";"))[0];
+                    Log.e("onSuccess", jsessionid);
                     String jsonResponse = response.body().toString();
                     try
                     {
@@ -104,12 +109,12 @@ public class LoginActivity extends AppCompatActivity  {
                         e.printStackTrace();
                     }
                 }else{
-                    Log.d("succ_test", Boolean.toString(response.isSuccessful()));
+                    Toast.makeText(getApplicationContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<LoginDTO> call, Throwable t) {
                 Log.e(TAG, "에러 = " + t.getMessage());
             }
         });

@@ -3,10 +3,14 @@ package com.example.pictureplace;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +18,15 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class MyPinFragment extends Fragment {
+    View layout;
+
+    ArrayList<ArrayList<String>> mImageSrcs;
+    ArrayList<String> myImageSrcs;
+    ArrayList<String> mUserName;
+    ArrayList<String> mDate;
+    ArrayList<String> mComment;
+    ArrayList<Integer> mLikeCount;
+    ArrayList<String> mContent;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +72,36 @@ public class MyPinFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_pin, container, false);
+        layout = inflater.inflate(R.layout.fragment_my_pin, container, false);
+
+        RecyclerView postRecyclerView = layout.findViewById(R.id.myPinRecycler);
+        postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        myImageSrcs = new ArrayList<String>();
+        mImageSrcs = new ArrayList<ArrayList<String>>();
+        mUserName = new ArrayList<String>();
+        mDate = new ArrayList<String>();
+        mComment = new ArrayList<String>();
+        mLikeCount = new ArrayList<Integer>();
+        mContent = new ArrayList<String>();
+
+        myImageSrcs.add("https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FIH7pg%2FbtqGH1ZgBXx%2Ft8KhtXCPoKDM1ZKljOv270%2Fimg.jpg");
+        myImageSrcs.add("https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FIH7pg%2FbtqGH1ZgBXx%2Ft8KhtXCPoKDM1ZKljOv270%2Fimg.jpg");
+
+
+        //dummy data
+        for(int i = 0; i < 5; i++){
+            mImageSrcs.add(myImageSrcs);
+            mUserName.add("윤대웅");
+            mDate.add("23.02.08");
+            mComment.add("좋네요");
+            mLikeCount.add(18);
+            mContent.add("이번에 바뀌었다고 해서 가보았어요.");
+        }
+
+        PostRcyAdapter adapter = new PostRcyAdapter(mImageSrcs, mUserName, mDate, mComment, mLikeCount, mContent);
+        postRecyclerView.setAdapter(adapter);
+
+        return layout;
     }
 }

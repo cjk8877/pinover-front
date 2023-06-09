@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/addPicture"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#fdfdfd">
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/regiDisclosure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <View
+            android:id="@+id/regiDisclosureCircle"
+            android:layout_marginRight="10dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/circle_outline"
+            android:backgroundTint="#9CED88"
+            android:layout_gravity="top"/>
+
+        <!--ED8888-->
+
+        <TextView
+            android:id="@+id/postUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/notosans_regular"
+            android:includeFontPadding="false"
+            android:text="유저이름"
+            android:textColor="#111111"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_marginRight="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginTop="24dp"
+            android:id="@+id/postDateTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/notosans_regular"
+            android:includeFontPadding="false"
+            android:text="23.04.26"
+            android:textColor="#111111"
+            android:textSize="12dp" />
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/postMenu"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        android:layout_gravity="right"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+    android:layout_marginTop="70dp"
+    android:id="@+id/postViewPager"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    android:layout_gravity="center_horizontal"/>
+</FrameLayout>
+
+    <TextView
+        android:id="@+id/postContent"
+        android:padding="10dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/notosans_regular"
+        android:includeFontPadding="false"
+        android:text="이번에 바뀌었다고 해서 한번 가봤어요."
+        android:lines="2"
+        android:textColor="#111111"
+        android:textSize="14dp" />
+
+<FrameLayout
+    android:layout_marginTop="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/notosans_bold"
+        android:includeFontPadding="false"
+        android:text="댓글"
+        android:textColor="#111111"
+        android:textSize="14dp" />
+
+    <TextView
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/postCommentTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/notosans_regular"
+        android:includeFontPadding="false"
+        android:text="좋아 보이네요."
+        android:textColor="#494949"
+        android:textSize="12dp" />
+
+    <ImageView
+        android:id="@+id/likeIV"
+        android:layout_marginRight="30dp"
+        android:layout_gravity="right|center"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/empty_heart"
+        />
+
+    <TextView
+        android:id="@+id/likeCount"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/notosans_regular"
+        android:includeFontPadding="false"
+        android:text="+16"
+        android:textColor="#E64C3C"
+        android:textSize="12dp" />
+</FrameLayout>
+
+    <View
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="370dp"
+        android:layout_height="1dp"
+        android:background="#111111"/>
+
+</LinearLayout>

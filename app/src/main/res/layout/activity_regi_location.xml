@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/pp_toolbar"
+        layout="@layout/pp_toolbar"/>
+
+    <fragment
+        android:id="@+id/locationMap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".RegiLocationActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        />
+
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/mylocation"/>
+
+    <LinearLayout
+        android:background="@drawable/frame"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="center">
+
+    <android.widget.Button
+        android:id="@+id/btnRegiLocation"
+        android:layout_width="360dp"
+        android:layout_height="47dp"
+        android:background="@drawable/edt_outline"
+        android:backgroundTint="#C2A4DF"
+        android:fontFamily="@font/notosans_bold"
+        android:text="이 위치로 등록"
+        android:includeFontPadding="false"
+        android:textColor="#fdfdfd"
+        android:textSize="16dp"
+        />
+    </LinearLayout>
+
+
+
+
+</FrameLayout>

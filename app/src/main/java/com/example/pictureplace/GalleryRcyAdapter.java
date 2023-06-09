@@ -2,6 +2,7 @@ package com.example.pictureplace;
 
 import android.content.Context;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,12 @@ import java.util.List;
 public class GalleryRcyAdapter extends RecyclerView.Adapter<GalleryRcyAdapter.ViewHolder> {
 
     private ArrayList<String> mData = null;
+    private ArrayList<String> mImgSrc;
     Context context;
-
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         ImageView imageView1, imageView2, imageView3, imageView4;
-
 
         ViewHolder(View itemView){
             super(itemView);
@@ -38,8 +38,9 @@ public class GalleryRcyAdapter extends RecyclerView.Adapter<GalleryRcyAdapter.Vi
         }
     }
 
-    GalleryRcyAdapter(ArrayList<String> list){
+    GalleryRcyAdapter(ArrayList<String> list, ArrayList<String> imgSrc){
         mData = list;
+        mImgSrc = imgSrc;
     }
 
     @Override
@@ -56,10 +57,13 @@ public class GalleryRcyAdapter extends RecyclerView.Adapter<GalleryRcyAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String text = mData.get(position);
         holder.textView.setText(text);
-        Glide.with(context).load("https://mblogthumb-phinf.pstatic.net/MjAyMDA4MDNfMjM4/MDAxNTk2NDE5NDA0NTYw.31arD1NtcPUJ-afD4xAAdpa_HbDBXrrR0TxRF6IdI3og.nXMzZFUBfHe0gHCpsQCf07ZFzaO9ToAUTY3xKyxrmJ4g.JPEG.csprint1/%EB%8B%A4%EC%96%91%ED%95%9C%EC%B1%85.jpg?type=w800").centerCrop().into(holder.imageView1);
-        Glide.with(context).load("https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FIH7pg%2FbtqGH1ZgBXx%2Ft8KhtXCPoKDM1ZKljOv270%2Fimg.jpg").centerCrop().into(holder.imageView2);
-        Glide.with(context).load("https://ppss.kr/wp-content/uploads/2014/04/007-549x377.jpg").centerCrop().into(holder.imageView3);
-        Glide.with(context).load("https://gimg.gilbut.co.kr/book/BN003653/rn_view_BN003653.jpg").centerCrop().into(holder.imageView4);
+        Log.d("GALLERY", Integer.toString(mData.size()-1));
+        if(position < mData.size()-1) {
+            Glide.with(context).load(mImgSrc.get(position * 4)).centerCrop().into(holder.imageView1);
+            Glide.with(context).load(mImgSrc.get(position * 4 + 1)).centerCrop().into(holder.imageView2);
+            Glide.with(context).load(mImgSrc.get(position * 4 + 2)).centerCrop().into(holder.imageView3);
+            Glide.with(context).load(mImgSrc.get(position * 4 + 3)).centerCrop().into(holder.imageView4);
+        }
     }
 
     @Override
