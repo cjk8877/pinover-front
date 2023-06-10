@@ -6,8 +6,8 @@
         android:title="지도"/>
     <item
         android:id="@+id/tabGallery"
-        android:icon="@drawable/ic_gallery"
-        android:title="갤러리"/>
+        android:icon="@drawable/ic_rader"
+        android:title="모아보기"/>
     <item
         android:id="@+id/tabAddMarker"
         android:icon="@drawable/shoot"

@@ -14,7 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import java.util.ArrayList;
 
 public class PostRcyAdapter extends RecyclerView.Adapter<PostRcyAdapter.ViewHolder>{
-    private ArrayList<ArrayList<String>> mImageSrcs;
+    private ArrayList<ArrayList<String>> mImageSrcs, mTags;
     private ArrayList<String> mUserName;
     private ArrayList<String> mDate;
     private ArrayList<String> mComment;
@@ -24,20 +24,20 @@ public class PostRcyAdapter extends RecyclerView.Adapter<PostRcyAdapter.ViewHold
     PostImagePagerAdapter pagerAdapter;
 
     public PostRcyAdapter(ArrayList<ArrayList<String>> imageSrcs, ArrayList<String> userName, ArrayList<String> date,
-    ArrayList<String> comment, ArrayList<Integer> likeCount, ArrayList<String> content){
+    ArrayList<String> comment, ArrayList<Integer> likeCount, ArrayList<String> content, ArrayList<ArrayList<String>> tags){
         mImageSrcs = imageSrcs;
         mUserName = userName;
         mDate = date;
         mComment = comment;
         mLikeCount = likeCount;
         mContent = content;
+        mTags = tags;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ViewPager2 postViewPager;
-        TextView userNameTV, dateTV, commentTV, likeCountTV, contentTV;
+        TextView userNameTV, dateTV, commentTV, likeCountTV, contentTV, tagTV;
         ImageView likeIV, postMenu;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -49,6 +49,7 @@ public class PostRcyAdapter extends RecyclerView.Adapter<PostRcyAdapter.ViewHold
             likeIV = itemView.findViewById(R.id.likeIV);
             postMenu = itemView.findViewById(R.id.postMenu);
             contentTV = itemView.findViewById(R.id.postContent);
+            tagTV = itemView.findViewById(R.id.postTag);
         }
     }
 
@@ -68,11 +69,25 @@ public class PostRcyAdapter extends RecyclerView.Adapter<PostRcyAdapter.ViewHold
         pagerAdapter = new PostImagePagerAdapter(context.getApplicationContext(), mImageSrcs.get(position));
         holder.postViewPager.setAdapter(pagerAdapter);
         holder.userNameTV.setText(mUserName.get(position));
-        holder.dateTV.setText(mDate.get(position));
+        holder.dateTV.setText(mDate.get(position).substring(2,11));
         holder.userNameTV.setText(mUserName.get(position));
         holder.commentTV.setText(mComment.get(position));
         holder.likeCountTV.setText("+" + mLikeCount.get(position));
         holder.contentTV.setText(mContent.get(position));
+
+        String tagString = "";
+        for(int i = 0; i < mTags.get(position).size(); i++){
+            tagString += " " + mTags.get(position).get(i);
+        }
+
+        holder.tagTV.setText(tagString);
+
+        holder.likeIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.likeIV.setImageResource(R.drawable.red_heart);
+            }
+        });
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.example.pictureplace;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import android.media.session.MediaSession;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,21 +25,15 @@ import retrofit2.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyPinFragment#newInstance} factory method to
+ * Use the {@link LocationPinsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyPinFragment extends Fragment {
+public class LocationPinsFragment extends Fragment {
     View layout;
 
-    ArrayList<ArrayList<String>> mImageSrcs;
-    ArrayList<String> myImageSrcs;
-    ArrayList<String> mUserName;
-    ArrayList<String> mDate;
-    ArrayList<String> mComment;
+    ArrayList<ArrayList<String>> mImageSrcs, mTags;
+    ArrayList<String> myImageSrcs, mUserName, mDate, mComment, mContent, myTags;
     ArrayList<Integer> mLikeCount;
-    ArrayList<String> mContent;
-    ArrayList<ArrayList<String>> mTags;
-    ArrayList<String> myTags;
     Retrofit retrofit;
     RetrofitFactory retrofitFactory = new RetrofitFactory();
 
@@ -54,7 +46,7 @@ public class MyPinFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public MyPinFragment() {
+    public LocationPinsFragment() {
         // Required empty public constructor
     }
 
@@ -64,11 +56,11 @@ public class MyPinFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyPinFragment.
+     * @return A new instance of fragment GalleryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyPinFragment newInstance(String param1, String param2) {
-        MyPinFragment fragment = new MyPinFragment();
+    public static LocationPinsFragment newInstance(String param1, String param2) {
+        LocationPinsFragment fragment = new LocationPinsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -89,7 +81,7 @@ public class MyPinFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        layout = inflater.inflate(R.layout.fragment_my_pin, container, false);
+        layout = inflater.inflate(R.layout.fragment_location_pins, container, false);
 
         RecyclerView postRecyclerView = layout.findViewById(R.id.myPinRecycler);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -125,10 +117,10 @@ public class MyPinFragment extends Fragment {
                             }
                         }
 
-                       if(response.body().get(i).getTags() != null) {
-                           for (int j = 0; j < myPinDTO.getTags().size(); j++) {
+                        if(response.body().get(i).getTags() != null) {
+                            for (int j = 0; j < myPinDTO.getTags().size(); j++) {
                                 myTags.add(myPinDTO.getTags().get(j));
-                           }
+                            }
                         }else
                             myTags.add("태그가 없습니다.");
 

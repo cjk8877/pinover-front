@@ -2,12 +2,9 @@ package com.example.pictureplace;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -15,20 +12,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toolbar;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity{
     private final String TAG = "MainACTIVITY";
@@ -39,8 +28,8 @@ public class MainActivity extends AppCompatActivity{
     private OnBackPressedListener mapBackPressFragment;
     MapFragment mapFragment;
     MyPinFragment myPinFragment;
-    SearchFragment searchFragment;
-    GalleryFragment galleryFragment;
+    SuggestFragment suggestFragment;
+    LocationPinsFragment locationPinsFragment;
     Intent loadIntent, regiIntent;
     public static Context contextMain;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
@@ -73,8 +62,8 @@ public class MainActivity extends AppCompatActivity{
         //fragment setting
         mapFragment = new MapFragment();
         myPinFragment = new MyPinFragment();
-        searchFragment = new SearchFragment();
-        galleryFragment = new GalleryFragment();
+        suggestFragment = new SuggestFragment();
+        locationPinsFragment = new LocationPinsFragment();
 
         //toolbar manu onclick
         toolbarMenu.setOnClickListener(new View.OnClickListener() {
@@ -105,10 +94,10 @@ public class MainActivity extends AppCompatActivity{
                         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, mapFragment).commit();
                         return true;
                     case R.id.tabSearch:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, searchFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, suggestFragment).commit();
                         return true;
                     case R.id.tabGallery:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, galleryFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, locationPinsFragment).commit();
                         return true;
                     case R.id.tabMyPin:
                         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, myPinFragment).commit();

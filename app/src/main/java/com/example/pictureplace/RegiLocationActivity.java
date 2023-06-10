@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,6 +51,7 @@ public class RegiLocationActivity extends AppCompatActivity implements OnMapRead
     @Override
     public void onMapReady(final GoogleMap googleMap){
         mMap = googleMap;
+        enableMyLocation();
 
         LatLng SEOUL = new LatLng(37.56, 126.97);
         MarkerOptions markerOptions = new MarkerOptions();
@@ -64,6 +66,17 @@ public class RegiLocationActivity extends AppCompatActivity implements OnMapRead
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
+        }
+    }
+
+    private void enableMyLocation() {
+        // 위치 권한을 확인합니다.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // 권한이 이미 허용된 경우 현재 위치를 활성화합니다.
+            mMap.setMyLocationEnabled(true);
+        } else {
+            // 권한이 허용되지 않은 경우 권한 요청을 수행합니다.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
     }
 }

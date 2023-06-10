@@ -48,7 +48,7 @@ import java.util.Map;
  */
 
 public class MapFragment extends Fragment
-        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, MainActivity.OnBackPressedListener {
+        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener, MainActivity.OnBackPressedListener {
     private MapView mapView = null;
     MainActivity mainActivity;
     LinearLayout pinInfo;
@@ -147,10 +147,10 @@ public class MapFragment extends Fragment
         if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
                 hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsListener);
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, gpsListener);
                 //manager.removeUpdates(gpsListener);
             } else if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, gpsListener);
+                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, gpsListener);
                 //manager.removeUpdates(gpsListener);
             }
             if (mMap != null) {
@@ -180,8 +180,8 @@ public class MapFragment extends Fragment
 
 
         // GPS provider를 이용전에 퍼미션 체크
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(getActivity(), "접근 권한이 없습니다.", Toast.LENGTH_SHORT).show();
             return;
         } else {
@@ -196,8 +196,8 @@ public class MapFragment extends Fragment
         super.onPause();
 
         if (mMap != null) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(false);
             }
         }
@@ -254,6 +254,7 @@ public class MapFragment extends Fragment
 //        showCurrentLocation(latitude, longitude);
 
         googleMap.setOnMarkerClickListener(this);
+        googleMap.setOnCameraIdleListener(this);
     }
 
     @Override
@@ -262,6 +263,13 @@ public class MapFragment extends Fragment
         contextMain.hideBottomMenu();
         isPinInfoOpened = true;
         return true;
+    }
+
+    // 카메라 움직임을 멈췄을 때 호출됨
+    @Override
+    public void onCameraIdle() {
+        Log.d("camera position", mMap.getCameraPosition().toString());
+        //TODO : lat, log, 확대비율로 location/nearest에 위치 정보 GET 요청,
     }
 
     private void startLocationUpdates() {
@@ -341,12 +349,6 @@ public class MapFragment extends Fragment
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             double zoomLevel = mMap.getCameraPosition().zoom;
-
-            String message = "확대 비율은" + zoomLevel;
-            Log.d("MapFrag", message);
-
-            //showCurrentLocation(latitude, longitude);
-            //Log.i("MyLocTest", "onLocationChanged() 호출되었습니다.");
         }
 
         @Override

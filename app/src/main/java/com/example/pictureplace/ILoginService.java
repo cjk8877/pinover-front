@@ -41,15 +41,33 @@ public interface ILoginService {
     @POST("posting/upload")
     Call<String> upload(@Header("authorization") String access_token,
             @Part List<MultipartBody.Part> photo,
-                        @Part("locationid") String locationid,
+                        @Part("locationname") String locationname,
+                        @Part("locationaddress") String locationAddress,
+                        @Part("latitude") String latitude,
+                        @Part("longitude") String longitude,
                         @Part("content") String content,
                         @Part("disclosure") String disclosure,
                         @Part("tags") String[] tags
     );
 
+    @GET("posting/mypin")
+    Call<List<MyPinDTO>> myPin(@Header("authorization") String access_token);
 
+    @GET("suggest/weeklyloca")
+    Call<List<SuggestDTO>> getSuggestWeekly();
 
+    @GET("suggest/popular")
+    Call<List<SuggestDTO>> getSuggestPopular();
 
+    @GET("suggest/random")
+    Call<List<SuggestDTO>> getSuggestRandom();
+
+    @GET("/location/nearest")
+    Call<MyPinDTO> getNearestLocations(
+            @Query("centerLatitude") double centerLatitude,
+            @Query("centerLongitude") double centerLongitude,
+            @Query("zoom") float zoom
+    );
 
 
 }

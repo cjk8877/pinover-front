@@ -43,6 +43,7 @@ import com.google.maps.model.PlacesSearchResult;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,13 +65,14 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
     View disclosureCircle;
     Drawable lastImage;
     Bitmap iBitmap;
-    EditText regiContentEdt;
+    EditText regiContentEdt, regiLocationNameEdt, regiTagsEdt;
     LinearLayout locationRegi, disclosure;
     TextView regiLocationTV, disclosureTV;
     Retrofit retrofit;
-    RetrofitFactory retrofitFactory;
     String mPlaceId;
     GeoApiContext geoApiContext;
+    double latitude, longitude; // 좌표계
+    String roadAddress; //도로명주소
 
     List<File> imageFiles = new ArrayList<>();
     List<MultipartBody.Part> imageParts = new ArrayList<>();
@@ -106,6 +108,8 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
         disclosureTV = findViewById(R.id.regiDisclosureTV);
         regiPinBtn = findViewById(R.id.regiPinBtn);
         regiContentEdt = findViewById(R.id.regiContentEdt);
+        regiLocationNameEdt = findViewById(R.id.regiLocationNameTV);
+        regiTagsEdt = findViewById(R.id.regiTagTV);
 
         //retrofit setting
         retrofit = new Retrofit.Builder()
@@ -115,6 +119,7 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
         ILoginService service = retrofit.create(ILoginService.class);
 
         //TODO: 예외처리 추가해야함
+        //핀 등록 버튼 onclick
         regiPinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,24 +129,29 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
                     imageParts.add(imagePart);
                 }
 
-                tagsArrayList.add("여행");
-                tagsArrayList.add("테스트");
+                String[] tagArray = regiTagsEdt.getText().toString().split("#");
+                List<String> tagList = new ArrayList<>(Arrays.asList(tagArray));
+                tagList.remove(0);
+                tagArray = tagList.toArray(new String[0]);
+                String[] disclosure = disclosureTV.getText().toString().split(":");
 
-                String[] tagArray = new String[tagsArrayList.size()];
-                tagsArrayList.toArray(tagArray);
+                TokenManager tokenManager = new TokenManager(getApplicationContext());
 
                 Call<String> call = service.upload(
-                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJiYmIiLCJpYXQiOjE2ODYyMDM4MjcsImV4cCI6MTY4NjM3NjYyN30.f7KTN3yKd_tj3N3DBjI65wUPsF7I7JxX-EHJ-KxV01A",
+                        tokenManager.getToken(),
                         imageParts,
-                        mPlaceId,
+                        regiLocationNameEdt.getText().toString(),
+                        roadAddress,
+                        Double.toString(latitude),
+                        Double.toString(longitude),
                         regiContentEdt.getText().toString(),
-                        disclosureTV.getText().toString(),
+                        disclosure[1],
                         tagArray);
 
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        Toast.makeText(getApplicationContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "등록이 완료되었습니다", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -149,6 +159,8 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
                         // 업로드 실패 또는 네트워크 오류 등의 처리
                     }
                 });
+
+                finish();
             }
         });
 
@@ -158,12 +170,12 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
                 if(disclosureFlag == 0) {
                     ColorStateList colorStateList = getResources().getColorStateList(R.color.disclosure);
                     disclosureCircle.setBackgroundTintList(colorStateList);
-                    disclosureTV.setText("공개여부 : 비공");
+                    disclosureTV.setText("공개여부 :비공개");
                     disclosureFlag = 1;
                 }else{
                     ColorStateList colorStateList = getResources().getColorStateList(R.color.open);
                     disclosureCircle.setBackgroundTintList(colorStateList);
-                    disclosureTV.setText("공개여부 : 공개");
+                    disclosureTV.setText("공개여부 :공개");
                     disclosureFlag = 0;
                 }
             }
@@ -261,8 +273,8 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
                 break;
             case REQUEST_LOCATION:
                 if (requestCode == REQUEST_LOCATION && resultCode == RESULT_OK) {
-                    double latitude = data.getDoubleExtra("latitude", 0.0);
-                    double longitude = data.getDoubleExtra("longitude", 0.0);
+                    latitude = data.getDoubleExtra("latitude", 0.0);
+                    longitude = data.getDoubleExtra("longitude", 0.0);
 
                     //도로명주소 리턴
                     Geocoder geocoder = new Geocoder(this, Locale.KOREAN);
@@ -271,7 +283,7 @@ public class RegiPinActivity extends AppCompatActivity implements ImagePagerAdap
                         List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                         if (addresses.size() > 0) {
                             Address address = addresses.get(0);
-                            String roadAddress = address.getAddressLine(0); // 도로명 주소
+                            roadAddress = address.getAddressLine(0); // 도로명 주소
                             regiLocationTV.setText(roadAddress);
                         }
                     } catch (IOException e) {

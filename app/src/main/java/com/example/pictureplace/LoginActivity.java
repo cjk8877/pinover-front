@@ -38,6 +38,9 @@ public class LoginActivity extends AppCompatActivity  {
     private final String TAG = "LoginActivity";
     ImageView loginDecoIv;
     private static Context mContext;
+    TokenManager tokenManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,9 @@ public class LoginActivity extends AppCompatActivity  {
         loginDecoIv.setColorFilter(Color.parseColor("#5DB0E7"));
 
         LoginActivity.mContext = getApplicationContext();
+
+        //토큰매니저 설정
+        tokenManager = new TokenManager(getApplicationContext());
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,17 +103,11 @@ public class LoginActivity extends AppCompatActivity  {
                 if (response.isSuccessful() && response.body() != null)
                 {
                     List<String> Cookielist = response.headers().values("Set-Cookie");
-                    String jsessionid = (Cookielist.get(0).split(";"))[0];
-                    Log.e("onSuccess", jsessionid);
+                    String accessToken = "Bearer " + (Cookielist.get(0).split(";"))[0].split("=")[1];
+                    tokenManager.saveToken(accessToken);
                     String jsonResponse = response.body().toString();
-                    try
-                    {
-                        parseRegData(jsonResponse);
-                    }
-                    catch (JSONException e)
-                    {
-                        e.printStackTrace();
-                    }
+                    Toast.makeText(getApplicationContext(), "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
                 }else{
                     Toast.makeText(getApplicationContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -125,20 +125,6 @@ public class LoginActivity extends AppCompatActivity  {
         return mContext;
     }
 
-    private void parseRegData(String response) throws JSONException
-    {
-        JSONObject jsonObject = new JSONObject(response);
-        Log.d("TEST", response);
-        if (jsonObject.optString("status").equals("success"))
-        {
-            Toast.makeText(getApplicationContext(), "로그인 성공 상태는 " + jsonObject.optString("status"), Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            Log.d("msg : ", jsonObject.getString("message"));
-            Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-        }
-    }
 }
 
 
