@@ -4,12 +4,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LocationPinsFragment"
-    android:paddingTop="60dp"
-    android:paddingBottom="70dp">
+    android:paddingBottom="50dp"
+    android:background="#4194CB">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/regi_outline"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:id="@+id/suggestInfoTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:fontFamily="@font/notosans_bold"
+            android:includeFontPadding="false"
+            android:text="핀 모아보기"
+            android:textColor="#111111"
+            android:textSize="24dp" />
+
+            <TextView
+                android:layout_marginRight="20dp"
+                android:id="@+id/locationPinsMyLocation"
+                android:gravity="right"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:fontFamily="@font/notosans_regular"
+                android:includeFontPadding="false"
+                android:text="내 위치 : "
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="#111111"
+                android:textSize="14dp" />
+        </FrameLayout>
+
+
+
+
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="15dp"
         android:id="@+id/LocationPinsRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </FrameLayout>

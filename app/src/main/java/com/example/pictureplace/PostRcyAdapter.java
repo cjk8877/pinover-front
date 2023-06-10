@@ -38,6 +38,7 @@ public class PostRcyAdapter extends RecyclerView.Adapter<PostRcyAdapter.ViewHold
         ViewPager2 postViewPager;
         TextView userNameTV, dateTV, commentTV, likeCountTV, contentTV, tagTV;
         ImageView likeIV, postMenu;
+        int likeFlag;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -50,6 +51,7 @@ public class PostRcyAdapter extends RecyclerView.Adapter<PostRcyAdapter.ViewHold
             postMenu = itemView.findViewById(R.id.postMenu);
             contentTV = itemView.findViewById(R.id.postContent);
             tagTV = itemView.findViewById(R.id.postTag);
+            likeFlag = 0;
         }
     }
 
@@ -85,7 +87,13 @@ public class PostRcyAdapter extends RecyclerView.Adapter<PostRcyAdapter.ViewHold
         holder.likeIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.likeIV.setImageResource(R.drawable.red_heart);
+                if(holder.likeFlag == 0) {
+                    holder.likeIV.setImageResource(R.drawable.red_heart);
+                    holder.likeFlag++;
+                }else{
+                    holder.likeIV.setImageResource(R.drawable.empty_heart);
+                    holder.likeFlag = 0;
+                }
             }
         });
     }

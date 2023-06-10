@@ -1,6 +1,5 @@
 package com.example.pictureplace;
 
-import java.io.File;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -63,10 +62,22 @@ public interface ILoginService {
     Call<List<SuggestDTO>> getSuggestRandom();
 
     @GET("/location/nearest")
-    Call<MyPinDTO> getNearestLocations(
+    Call<List<MyPinDTO>> getNearestLocations(
             @Query("centerLatitude") double centerLatitude,
             @Query("centerLongitude") double centerLongitude,
             @Query("zoom") float zoom
+    );
+
+    @GET("location/within-radius")
+    Call<List<MapPinsDTO>> getMapPins(
+            @Query("centerLatitude") double centerLatitude,
+            @Query("centerLongitude") double centerLongitude,
+            @Query("zoom") float zoom
+    );
+
+    @GET("location")
+    Call<List<MyPinDTO>> postLoad(
+            @Query("locationid") String locationId
     );
 
 

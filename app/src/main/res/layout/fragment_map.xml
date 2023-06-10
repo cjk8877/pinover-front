@@ -32,6 +32,7 @@
             android:src="@drawable/bottom_arrow"/>
 
         <TextView
+            android:id="@+id/pinName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -51,17 +52,20 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/pinImage1"
                 android:layout_width="147dp"
                 android:layout_height="128dp"
                 android:src="@drawable/pininfo_dummy" />
 
             <ImageView
+                android:id="@+id/pinImage2"
                 android:layout_width="147dp"
                 android:layout_height="128dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/pininfo_dummy2" />
 
             <ImageView
+                android:id="@+id/pinImage3"
                 android:layout_width="147dp"
                 android:layout_height="128dp"
                 android:layout_marginLeft="10dp"
@@ -84,14 +88,28 @@
                 android:fontFamily="@font/notosans_bold"
                 android:gravity="left"
                 android:includeFontPadding="false"
-                android:text="설명"
+                android:text="추천수"
                 android:textColor="#111111"
                 android:textSize="14dp" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KBS 드라마 아스달 연대기 촬영 장소이다." />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginRight="5dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/red_heart"/>
+                <TextView
+                    android:id="@+id/recommendCount"
+                    android:textColor="#E64C3C"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+32" />
+
+            </LinearLayout>
 
 
             <!--유저 평가 부분-->
@@ -103,7 +121,7 @@
                 android:fontFamily="@font/notosans_bold"
                 android:gravity="left"
                 android:includeFontPadding="false"
-                android:text="유저 평가"
+                android:text="유저 코멘트"
                 android:textColor="#111111"
                 android:textSize="14dp" />
 
@@ -122,15 +140,12 @@
                     android:padding="10dp">
 
                     <TextView
+                        android:id="@+id/userComment1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="주변에 어디 가기에는 접근성이 안 좋네요\n그래도 사진 찍기에는 좋아요." />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:text="(3.5)" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -142,15 +157,11 @@
                     android:padding="10dp">
 
                     <TextView
+                        android:id="@+id/userComment2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="주변에 어디 가기에는 접근성이 안 좋네요\n그래도 사진 찍기에는 좋아요." />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:text="(3.5)" />
                 </LinearLayout>
 
 
@@ -158,6 +169,7 @@
         </LinearLayout>
 
         <android.widget.Button
+            android:id="@+id/pinGatheringBtn"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"

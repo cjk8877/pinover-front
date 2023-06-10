@@ -34,7 +34,7 @@ public class SuggestFragment extends Fragment{
     RetrofitFactory retrofitFactory = new RetrofitFactory();
     Retrofit retrofit;
 
-    ArrayList<String> srcList;
+    ArrayList<ArrayList<String>> srcLists;
     ArrayList<String> list;
     ArrayList<String> weeklySrcs, popularSrcs, randomSrcs;
     private final int WEEKLY_LOCA = 1;
@@ -94,7 +94,7 @@ public class SuggestFragment extends Fragment{
         Call<List<SuggestDTO>> call = service.getSuggestWeekly();
 
         list = new ArrayList<>();
-        srcList = new ArrayList<>();
+        srcLists = new ArrayList<>();
 
         weeklySrcs = new ArrayList<>();
         popularSrcs = new ArrayList<>();
@@ -221,20 +221,14 @@ public class SuggestFragment extends Fragment{
 
     private void checkResponseComplete(){
         if(responseCounter == 3){
-            for(int i = 0; i < weeklySrcs.size(); i++){
-                srcList.add(weeklySrcs.get(i));
-            }
-            for(int i = 0; i < popularSrcs.size(); i++){
-                srcList.add(popularSrcs.get(i));
-            }
-            for(int i = 0; i < randomSrcs.size(); i++){
-                srcList.add(randomSrcs.get(i));
-            }
+            srcLists.add(weeklySrcs);
+            srcLists.add(popularSrcs);
+            srcLists.add(randomSrcs);
 
             RecyclerView recyclerView = layout.findViewById(R.id.galleryRecycler);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            SuggestRcyAdapter adapter = new SuggestRcyAdapter(list, srcList);
+            SuggestRcyAdapter adapter = new SuggestRcyAdapter(list, srcLists);
             recyclerView.setAdapter(adapter);
             adapter.setOnItemClickListener(new SuggestRcyAdapter.OnItemClickListener() {
                 @Override
@@ -244,6 +238,11 @@ public class SuggestFragment extends Fragment{
                     startActivity(suggestIntent);
                 }
             });
+
+            weeklySrcs = new ArrayList<>();
+            popularSrcs = new ArrayList<>();
+            randomSrcs = new ArrayList<>();
+            responseCounter = 0;
         }
     }
 }

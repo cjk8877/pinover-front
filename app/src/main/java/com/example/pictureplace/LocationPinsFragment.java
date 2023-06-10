@@ -1,7 +1,11 @@
 package com.example.pictureplace;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,11 +16,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +42,15 @@ public class LocationPinsFragment extends Fragment {
     ArrayList<Integer> mLikeCount;
     Retrofit retrofit;
     RetrofitFactory retrofitFactory = new RetrofitFactory();
+    TextView locationPinsMyLocationTV;
+    String roadAddress;
+    Double latitude, longitude;
+    Geocoder geocoder;
+    RecyclerView postRecyclerView;
+    private final int REQUEST_LOCATION = 0;
+    Call<List<MyPinDTO>> call;
+    ILoginService service;
+    PostRcyAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,7 +98,7 @@ public class LocationPinsFragment extends Fragment {
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.fragment_location_pins, container, false);
 
-        RecyclerView postRecyclerView = layout.findViewById(R.id.myPinRecycler);
+        postRecyclerView = layout.findViewById(R.id.LocationPinsRecycler);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mImageSrcs = new ArrayList<ArrayList<String>>();
@@ -94,11 +109,74 @@ public class LocationPinsFragment extends Fragment {
         mContent = new ArrayList<String>();
         mTags = new ArrayList<ArrayList<String>>();
 
-        retrofit = retrofitFactory.newRetrofit();
-        ILoginService service = retrofit.create(ILoginService.class);
-        TokenManager tokenManager = new TokenManager(getActivity());
-        Call<List<MyPinDTO>> call = service.myPin(tokenManager.getToken());
+        locationPinsMyLocationTV = layout.findViewById(R.id.locationPinsMyLocation);
+        locationPinsMyLocationTV.setText("");
 
+        geocoder = new Geocoder(getActivity(), Locale.KOREAN);
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(36.367339, 127.384896, 1);
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+                roadAddress = address.getAddressLine(0); // 도로명 주소
+                locationPinsMyLocationTV.setText("현재 위치 : " + roadAddress);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        retrofit = retrofitFactory.newRetrofit();
+        service = retrofit.create(ILoginService.class);
+        call = service.getNearestLocations((float)36.367339, (float)127.384896, (float) 13.0);
+
+        locationPinsMyLocationTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), RegiLocationActivity.class);
+                startActivityForResult(intent, REQUEST_LOCATION);
+            }
+        });
+
+        recycleViews(call);
+
+        return layout;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_LOCATION:
+                if (requestCode == REQUEST_LOCATION && resultCode == RESULT_OK) {
+                    latitude = data.getDoubleExtra("latitude", 0.0);
+                    longitude = data.getDoubleExtra("longitude", 0.0);
+
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                        if (addresses.size() > 0) {
+                            Address address = addresses.get(0);
+                            roadAddress = address.getAddressLine(0); // 도로명 주소
+                            locationPinsMyLocationTV.setText("현재 위치 : " + roadAddress);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                mImageSrcs = new ArrayList<ArrayList<String>>();
+                mUserName = new ArrayList<String>();
+                mDate = new ArrayList<String>();
+                mComment = new ArrayList<String>();
+                mLikeCount = new ArrayList<Integer>();
+                mContent = new ArrayList<String>();
+                mTags = new ArrayList<ArrayList<String>>();
+
+                call = service.getNearestLocations(latitude.floatValue(), longitude.floatValue(), (float) 13.0);
+                recycleViews(call);
+                break;
+        }
+    }
+
+    private void recycleViews(Call call){
         call.enqueue(new Callback<List<MyPinDTO>>() {
             @Override
             public void onResponse(Call<List<MyPinDTO>> call, Response<List<MyPinDTO>> response) {
@@ -133,7 +211,7 @@ public class LocationPinsFragment extends Fragment {
                         mComment.add("좋네요");
                     }
 
-                    PostRcyAdapter adapter = new PostRcyAdapter(mImageSrcs, mUserName, mDate, mComment, mLikeCount, mContent, mTags);
+                    adapter = new PostRcyAdapter(mImageSrcs, mUserName, mDate, mComment, mLikeCount, mContent, mTags);
                     postRecyclerView.setAdapter(adapter);
 
                 } else {
@@ -152,7 +230,5 @@ public class LocationPinsFragment extends Fragment {
                 Log.e(TAG, "에러 = " + t.getMessage());
             }
         });
-
-        return layout;
     }
 }

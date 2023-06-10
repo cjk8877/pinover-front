@@ -21,7 +21,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity{
     private final String TAG = "MainACTIVITY";
-    Toolbar toolbar;
+    View toolbar;
     BottomNavigationView navigationView;
     private DrawerLayout drawerLayout;
     private LinearLayout drawerView, drawerHeader;
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity{
         drawerLayout.addDrawerListener(listener);
         ImageView toolbarMenu;
         toolbarMenu = (ImageView) findViewById(R.id.toolbarMenu);
+        toolbar = findViewById(R.id.pp_toolbar);
 
         //fragment setting
         mapFragment = new MapFragment();
@@ -92,15 +93,19 @@ public class MainActivity extends AppCompatActivity{
                 switch (item.getItemId()){
                     case R.id.tabMap:
                         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, mapFragment).commit();
+                        toolbar.setVisibility(View.VISIBLE);
                         return true;
                     case R.id.tabSearch:
                         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, suggestFragment).commit();
+                        toolbar.setVisibility(View.VISIBLE);
                         return true;
                     case R.id.tabGallery:
                         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, locationPinsFragment).commit();
+                        toolbar.setVisibility(View.GONE);
                         return true;
                     case R.id.tabMyPin:
                         getSupportFragmentManager().beginTransaction().replace(R.id.homeFg, myPinFragment).commit();
+                        toolbar.setVisibility(View.VISIBLE);
                         return true;
                     case R.id.tabAddMarker:
                         //게시글 올리기 액티비티 실행

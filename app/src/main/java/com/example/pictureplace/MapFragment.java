@@ -1,7 +1,10 @@
 package com.example.pictureplace;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -22,10 +25,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -39,7 +45,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,6 +82,18 @@ public class MapFragment extends Fragment
     MarkerOptions myLocationMarker;
     Circle circle;
     CircleOptions circle1KM;
+    RetrofitFactory retrofitFactory = new RetrofitFactory();
+    Retrofit retrofit;
+    ArrayList<LatLng> pinLocation;
+    Set<LatLng> addedLocations;
+    Call<List<MapPinsDTO>> call;
+    ILoginService service;
+    List<Marker> markers;
+    ArrayList<String> placeId;
+    TextView pinName, pinRecommendCount, pinComment1, pinComment2;
+    ImageView pinImage1, pinImage2, pinImage3;
+    Button pinGatheringBtn;
+    String markerId;
 
     @Override
     public void onBackPressed(){
@@ -105,8 +133,25 @@ public class MapFragment extends Fragment
         //id connecting
         pinInfo = (LinearLayout) layout.findViewById(R.id.pinInfo);
         bottomArrow = (ImageView) layout.findViewById(R.id.pinInfoBottomArrow);
+        pinName = layout.findViewById(R.id.pinName);
+        pinRecommendCount = layout.findViewById(R.id.recommendCount);
+        pinComment1 = layout.findViewById(R.id.userComment1);
+        pinComment2 = layout.findViewById(R.id.userComment2);
+        pinImage1 = layout.findViewById(R.id.pinImage1);
+        pinImage2 = layout.findViewById(R.id.pinImage2);
+        pinImage3 = layout.findViewById(R.id.pinImage3);
+        pinGatheringBtn = layout.findViewById(R.id.pinGatheringBtn);
 
         int hasFinePer = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+
+        pinGatheringBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MapPinGathering.class);
+                intent.putExtra("placeId", markerId);
+                startActivity(intent);
+            }
+        });
 
         bottomArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,6 +278,42 @@ public class MapFragment extends Fragment
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        addedLocations = new HashSet<>();
+        retrofit = retrofitFactory.newRetrofit();
+        service = retrofit.create(ILoginService.class);
+        call = service.getMapPins((float)36.367339, (float)127.384896, (float) 15.0);
+        markers = new ArrayList<>();
+        pinLocation = new ArrayList<>();
+        placeId = new ArrayList<>();
+
+        call.enqueue(new Callback<List<MapPinsDTO>>() {
+            @Override
+            public void onResponse(Call<List<MapPinsDTO>> call, Response<List<MapPinsDTO>> response) {
+                MapPinsDTO mapPinsDTO;
+                for(int i = 0; i < response.body().size(); i++){
+                    mapPinsDTO = response.body().get(i);
+                    pinLocation.add(new LatLng(Double.parseDouble(mapPinsDTO.getLatitude()), Double.parseDouble(mapPinsDTO.getLongitude())));
+                    placeId.add(mapPinsDTO.getLocationId());
+                }
+
+                for(LatLng location : pinLocation){
+                    if(!addedLocations.contains(location)){
+                        MarkerOptions markerOptions = new MarkerOptions().position(location);
+                        Marker marker = googleMap.addMarker(markerOptions);
+                        markers.add(marker);
+                        addedLocations.add(location);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MapPinsDTO>> call, Throwable t) {
+                Log.e(TAG, "에러 = " + t.getMessage());
+            }
+        });
+
+
+
         LatLng SEOUL = new LatLng(37.56, 126.97);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(SEOUL);
@@ -259,9 +340,52 @@ public class MapFragment extends Fragment
 
     @Override
     public boolean onMarkerClick(Marker maker) {
-        pinInfo.setVisibility(View.VISIBLE);
-        contextMain.hideBottomMenu();
-        isPinInfoOpened = true;
+        Call<List<MyPinDTO>> markerInfoCall = service.postLoad(maker.getTitle());
+
+        markerInfoCall.enqueue(new Callback<List<MyPinDTO>>() {
+            @Override
+            public void onResponse(Call<List<MyPinDTO>> call, Response<List<MyPinDTO>> response) {
+                int recommendCount = 0;
+                if (response.isSuccessful() && response.body() != null) {
+                    List<MyPinDTO> myPin = response.body();
+                    pinInfo.setVisibility(View.VISIBLE);
+                    contextMain.hideBottomMenu();
+                    isPinInfoOpened = true;
+
+                    markerId = maker.getTitle();
+                    pinName.setText(myPin.get(0).getLocationname());
+                    pinComment1.setText(myPin.get(0).getContent());
+                    pinComment2.setText(myPin.get(1).getContent());
+
+                    //TODO :매우 불안정 수정 요망
+                    Glide.with(getActivity()).load(myPin.get(0).getPictures().get(0)).centerCrop().into(pinImage1);
+                    Glide.with(getActivity()).load(myPin.get(1).getPictures().get(0)).centerCrop().into(pinImage2);
+                    Glide.with(getActivity()).load(myPin.get(2).getPictures().get(0)).centerCrop().into(pinImage3);
+
+                    for(int i = 0; i < myPin.size(); i++){
+                        recommendCount += myPin.get(i).getRecommendCount();
+                    }
+
+                    pinRecommendCount.setText("+" + recommendCount);
+
+                }else {
+                    try {
+                        String errorMessage = response.errorBody().string();
+                        Toast.makeText(getActivity(), "에러가 발생했습니다. 조회에 실패했습니다." +
+                                "에러 메세지 = " + errorMessage, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MyPinDTO>> call, Throwable t) {
+                Log.e(TAG, "에러 = " + t.getMessage());
+
+            }
+        });
+
         return true;
     }
 
@@ -270,6 +394,37 @@ public class MapFragment extends Fragment
     public void onCameraIdle() {
         Log.d("camera position", mMap.getCameraPosition().toString());
         //TODO : lat, log, 확대비율로 location/nearest에 위치 정보 GET 요청,
+
+        call = service.getMapPins((float)mMap.getCameraPosition().target.latitude, (float)mMap.getCameraPosition().target.longitude, (float)mMap.getCameraPosition().zoom);
+
+        call.enqueue(new Callback<List<MapPinsDTO>>() {
+            @Override
+            public void onResponse(Call<List<MapPinsDTO>> call, Response<List<MapPinsDTO>> response) {
+                MapPinsDTO mapPinsDTO;
+                for(int i = 0; i < response.body().size(); i++){
+                    mapPinsDTO = response.body().get(i);
+                    pinLocation.add(new LatLng(Double.parseDouble(mapPinsDTO.getLatitude()), Double.parseDouble(mapPinsDTO.getLongitude())));
+                    placeId.add(mapPinsDTO.getLocationId());
+                }
+
+                for(int i = 0; i < pinLocation.size(); i++){
+                    LatLng location = pinLocation.get(i);
+                    if(!addedLocations.contains(location)){
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(location).title(placeId.get(i));
+                        Marker marker = mMap.addMarker(markerOptions);
+                        markers.add(marker);
+                        addedLocations.add(location);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MapPinsDTO>> call, Throwable t) {
+                Log.e(TAG, "에러 = " + t.getMessage());
+            }
+        });
+
     }
 
     private void startLocationUpdates() {

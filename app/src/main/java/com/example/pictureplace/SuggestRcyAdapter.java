@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class SuggestRcyAdapter extends RecyclerView.Adapter<SuggestRcyAdapter.ViewHolder> {
 
     private ArrayList<String> mData = null;
-    private ArrayList<String> mImgSrc;
+    private ArrayList<ArrayList<String>> mImgSrcs;
     Context context;
     Intent intent;
     private OnItemClickListener mListener;
@@ -45,9 +45,9 @@ public class SuggestRcyAdapter extends RecyclerView.Adapter<SuggestRcyAdapter.Vi
         }
     }
 
-    SuggestRcyAdapter(ArrayList<String> list, ArrayList<String> imgSrc){
+    SuggestRcyAdapter(ArrayList<String> list, ArrayList<ArrayList<String>> imgSrcs){
         mData = list;
-        mImgSrc = imgSrc;
+        mImgSrcs = imgSrcs;
     }
 
     @Override
@@ -66,17 +66,18 @@ public class SuggestRcyAdapter extends RecyclerView.Adapter<SuggestRcyAdapter.Vi
         holder.textView.setText(text);
         Log.d("GALLERY", Integer.toString(mData.size()-1));
 
-        if(position < mData.size() && mImgSrc.size() > position * 4 +3) {
-            Glide.with(context).load(mImgSrc.get(position * 4)).centerCrop().into(holder.imageView1);
-            Glide.with(context).load(mImgSrc.get(position * 4 + 1)).centerCrop().into(holder.imageView2);
-            Glide.with(context).load(mImgSrc.get(position * 4 + 2)).centerCrop().into(holder.imageView3);
-            Glide.with(context).load(mImgSrc.get(position * 4 + 3)).centerCrop().into(holder.imageView4);
+        if(mImgSrcs.get(position).size() >= 4) {
+            for (int i = 0; i < 4; i++) {
+                Glide.with(context).load(mImgSrcs.get(position).get(i)).centerCrop().into(holder.imageViews[i]);
+            }
+        }else{
+            for (int i = 0; i < mImgSrcs.get(position).size(); i++) {
+                Glide.with(context).load(mImgSrcs.get(position).get(i)).centerCrop().into(holder.imageViews[i]);
+            }
+            for (int i = mImgSrcs.get(position).size(); i < 4; i++) {
+                Glide.with(context).load("https://www.alpha.co.kr/common/img/noimage/268.png").centerCrop().into(holder.imageViews[i]);
+            }
         }
-
-//        int j = 0;
-//        for(int i = 0 ; position * 4 + i < (position+1) * 4; i++, j++) {
-//               Glide.with(context).load(mImgSrc.get(position * 4 + i)).centerCrop().into(holder.imageViews[j%4]);
-//        }
 
         holder.suggestItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override

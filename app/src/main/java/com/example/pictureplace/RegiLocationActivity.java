@@ -53,10 +53,10 @@ public class RegiLocationActivity extends AppCompatActivity implements OnMapRead
         mMap = googleMap;
         enableMyLocation();
 
-        LatLng SEOUL = new LatLng(37.56, 126.97);
+        LatLng SEOUL = new LatLng(36.367339, 127.384896);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(SEOUL);
-        markerOptions.title("서울");
+        markerOptions.title("대전");
         markerOptions.snippet("수도");
         mMap.addMarker(markerOptions);
 
